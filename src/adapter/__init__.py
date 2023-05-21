@@ -1,1 +1,0 @@
-"""Adapter and repositories."""
