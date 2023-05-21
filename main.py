@@ -56,9 +56,7 @@ def add_arguments(ap: ArgumentParserLike) -> ArgumentParserLike:
 
 def main() -> None:  # noqa: D103
     args = add_arguments(ArgumentParser()).parse_args()  # type: ignore [arg-type]
-    lines = FileRepository.read_lines(args.path)
-    result = find(lines, args.value)
-    show(result)
+    show(find(FileRepository.read_lines(args.path), args.value))
 
 
 if __name__ == "__main__":
