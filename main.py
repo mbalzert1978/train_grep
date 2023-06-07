@@ -3,21 +3,25 @@ from __future__ import annotations
 
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Protocol
+from typing import TYPE_CHECKING, Protocol
 
 if TYPE_CHECKING:
-    from collections.abc import Generator, Iterable
+    from collections.abc import Generator, Iterable, Sequence
 
 
 class ArgumentParserLike(Protocol):
 
     """Protocol for adding arguments to an ArgumentParser."""
 
-    def add_argument(self, *args: Any, **kwargs: Any) -> None:  # noqa: ANN401
+    def add_argument(self, *args: Sequence, **kwargs: str | type) -> None:
         """Add an argument to the parser."""
         ...
 
-    def parse_args(self, args=None, namespace=None) -> Namespace:
+    def parse_args(
+        self,
+        args: Sequence | None = None,
+        namespace: Namespace | None = None,
+    ) -> Namespace:
         """Parse arguments."""
         ...
 
