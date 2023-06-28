@@ -1,6 +1,8 @@
 """Main module."""
 from __future__ import annotations
 
+import re
+import sys
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
@@ -37,30 +39,27 @@ class FileRepository:
             yield from f.readlines()
 
 
-Lines = tuple[str, ...]
+def find(lines: Iterable, regex: str) -> Iterable:
+    """Find the lines with the given regex."""
+    return filter(lambda line: re.compile(regex).search(line), lines)
 
 
-def find(lines: Iterable, value: str) -> Lines:
-    """Find the line with the given value."""
-    return tuple(filter(lambda line: value in line, lines))
-
-
-def show(found: Lines) -> None:
+def show(found: Iterable) -> None:
     """Show the found lines."""
     for line in found:
-        print(line)
+        _ = sys.stdout.write(line)
 
 
 def add_arguments(ap: ArgumentParserLike) -> ArgumentParserLike:
     """Set up the argument parser."""
-    ap.add_argument("path", help="the path to the file to grep.", type=Path)
-    ap.add_argument("value", help="the value to search for.")
+    ap.add_argument("path", help="the path to the file.", type=Path)
+    ap.add_argument("regex", help="the regex to search for.")
     return ap
 
 
 def main() -> None:  # noqa: D103
     args = add_arguments(ArgumentParser()).parse_args()  # type: ignore [arg-type]
-    show(find(FileRepository.read_lines(args.path), args.value))
+    show(find(FileRepository.read_lines(args.path), args.regex))
 
 
 if __name__ == "__main__":
