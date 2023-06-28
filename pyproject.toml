@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "monad"
+name = "train_grep_python"
 version = "0.1.0"
 description = ""
 authors = ["Markus Iorio <mbalzert@gmail.com>"]
