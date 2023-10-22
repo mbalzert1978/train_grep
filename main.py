@@ -38,9 +38,9 @@ def leave_on_missing_arg(msg: str) -> NoReturn:
     sys.exit(1)
 
 
-def extract_path_and_value(items: MutableSequence[str]) -> tuple[str, str]:
+def extract_path_and_value(sys_args: MutableSequence[str]) -> tuple[str, str]:
     """Extract the path and search string from the command line arguments."""
-    args = MutableVector(items).skip(1)
+    args = MutableVector(sys_args).skip(1)
     if (path := args.next()) is None:
         leave_on_missing_arg("Path argument missing.")
     if (search_string := args.next()) is None:
