@@ -1,6 +1,6 @@
 """Main module."""
 import sys
-from collections.abc import MutableSequence
+from collections.abc import MutableSequence, Sequence
 from functools import partial
 from pathlib import Path
 
@@ -9,7 +9,7 @@ from result import as_result
 from model import MutableVector
 
 
-def show_lines(lines: MutableSequence[str]) -> None:
+def show_lines(lines: Sequence[str]) -> None:
     """Print the found lines."""
     if not lines:
         msg = "No matches found."
