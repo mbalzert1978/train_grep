@@ -3,6 +3,7 @@ import sys
 from collections.abc import MutableSequence, Sequence
 from functools import partial
 from pathlib import Path
+from typing import NoReturn
 
 from result import as_result
 
@@ -31,15 +32,19 @@ def read_lines(path: Path) -> MutableVector[str]:
         return MutableVector(f.readlines())
 
 
+def leave_on_missing_arg(msg: str) -> NoReturn:
+    """Print a message and exit."""
+    print(msg)
+    sys.exit(1)
+
+
 def extract_path_and_value(items: MutableSequence[str]) -> tuple[str, str]:
     """Extract the path and search string from the command line arguments."""
     args = MutableVector(items).skip(1)
     if (path := args.next()) is None:
-        msg = "Path argument missing."
-        raise ValueError(msg)
+        leave_on_missing_arg("Path argument missing.")
     if (search_string := args.next()) is None:
-        msg = "Search string argument missing."
-        raise ValueError(msg)
+        leave_on_missing_arg("Search string argument missing.")
     return (path, search_string)
 
 
