@@ -7,6 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+result = "^0.13.1"
 
 
 
@@ -22,8 +23,8 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
-line-length = 79
-target-version = ['py311']
+line-length = 119
+target-version = ['py312']
 
 [tool.ruff]
 select = [
@@ -70,5 +71,5 @@ select = [
     "UP",
     "YTT",
 ]
-ignore = ["ANN001", "ANN101", "ANN102", "D211", "D212", "PGH003"]
+ignore = ["ANN001", "ANN101", "ANN102", "D211", "D212", "PGH003", "BLE001", "A003", "E501", "D103", "D107"]
 exclude = ["tests"]

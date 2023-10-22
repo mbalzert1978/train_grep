@@ -1,65 +1,51 @@
 """Main module."""
-from __future__ import annotations
-
-import re
 import sys
-from argparse import ArgumentParser, Namespace
+from collections.abc import MutableSequence
+from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Protocol
 
-if TYPE_CHECKING:
-    from collections.abc import Generator, Iterable, Sequence
+from result import as_result
 
-
-class ArgumentParserLike(Protocol):
-
-    """Protocol for adding arguments to an ArgumentParser."""
-
-    def add_argument(self, *args: Sequence, **kwargs: str | type) -> None:
-        """Add an argument to the parser."""
-        ...
-
-    def parse_args(
-        self,
-        args: Sequence | None = None,
-        namespace: Namespace | None = None,
-    ) -> Namespace:
-        """Parse arguments."""
-        ...
+from model import MutableVector
 
 
-class FileRepository:
-
-    """File repository."""
-
-    @staticmethod
-    def read_lines(path: Path) -> Generator[str, None, None]:
-        """Read lines from file."""
-        with path.open(encoding="utf8") as f:
-            yield from f.readlines()
+def show_lines(lines: MutableSequence[str]) -> None:
+    """Print the found lines."""
+    if not lines:
+        msg = "No matches found."
+        print(msg)
+    for line in lines:
+        print(line)
 
 
-def find(lines: Iterable, regex: str) -> Iterable:
-    """Find the lines with the given regex."""
-    return filter(lambda line: re.compile(regex).search(line), lines)
+@as_result(Exception)
+def find_lines(lines: MutableSequence[str], search_string: str) -> MutableVector[str]:
+    """Find the lines that match the given search string."""
+    return MutableVector(line for line in lines if search_string in line)
 
 
-def show(found: Iterable) -> None:
-    """Show the found lines."""
-    for line in found:
-        _ = sys.stdout.write(line)
+@as_result(Exception)
+def read_lines(path: Path) -> MutableVector[str]:
+    """Read the lines from a given file."""
+    with path.open("r", encoding="utf8") as f:
+        return MutableVector(f.readlines())
 
 
-def add_arguments(ap: ArgumentParserLike) -> ArgumentParserLike:
-    """Set up the argument parser."""
-    ap.add_argument("path", help="the path to the file.", type=Path)
-    ap.add_argument("regex", help="the regex to search for.")
-    return ap
+def extract_path_and_value(items: MutableSequence[str]) -> tuple[str, str]:
+    """Extract the path and search string from the command line arguments."""
+    args = MutableVector(items).skip(1)
+    if (path := args.next()) is None:
+        msg = "Path argument missing."
+        raise ValueError(msg)
+    if (search_string := args.next()) is None:
+        msg = "Search string argument missing."
+        raise ValueError(msg)
+    return (path, search_string)
 
 
-def main() -> None:  # noqa: D103
-    args = add_arguments(ArgumentParser()).parse_args()  # type: ignore [arg-type]
-    show(find(FileRepository.read_lines(args.path), args.regex))
+def main() -> None:
+    filename, search_string = extract_path_and_value(sys.argv)
+    read_lines(Path(filename)).and_then(partial(find_lines, search_string=search_string)).and_then(show_lines)
 
 
 if __name__ == "__main__":
