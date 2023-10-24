@@ -13,9 +13,9 @@ class MutableVector[T](MutableSequence):
 
     """A mutable sequence."""
 
-    def __init__(self, items: Sequence[T], n: int = 0) -> None:
+    def __init__(self, items: Sequence[T]) -> None:
         self._items = list(items)
-        self._n = n
+        self._index = 0
         super().__init__()
 
     @classmethod
@@ -42,7 +42,7 @@ class MutableVector[T](MutableSequence):
 
     def __getitem__(self, index: int) -> T:
         """Return the item at the given index."""
-        self._n = index
+        self._index = index
         return self._items[index]
 
     def __setitem__(self, index: int, value: T) -> None:
@@ -89,10 +89,10 @@ class MutableVector[T](MutableSequence):
             foo = MutableVector([1, 2, 3])
             foo.next()
         """
-        if self._n >= len(self._items):
+        if self._index >= len(self._items):
             return None
-        self._n += 1
-        return self._items[self._n - 1]
+        self._index += 1
+        return self._items[self._index - 1]
 
 
 MutableSequence.register(MutableVector)
