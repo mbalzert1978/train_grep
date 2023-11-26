@@ -1,7 +1,11 @@
 """Mutable Vector."""
+from __future__ import annotations
+
+import operator
+import reprlib
 import sys
-from collections.abc import MutableSequence
-from typing import Self, Sequence, SupportsIndex
+from collections.abc import Iterator, MutableSequence, Sequence
+from typing import Iterable, Self, SupportsIndex, overload
 
 
 class OutofBoundsError(Exception):
@@ -9,57 +13,60 @@ class OutofBoundsError(Exception):
     """Exception raised when an index is out of bounds."""
 
 
-class MutableVector[T](MutableSequence):
+class ImutableVector[T](Sequence):
 
-    """A mutable sequence."""
+    """An immutable Vector."""
 
-    def __init__(self, items: Sequence[T]) -> None:
-        self._items = list(items)
+    __slots__ = ("_components", "_index")
+
+    def __init__(self, __iterable: Iterable[T]) -> None:
+        self._components = list(__iterable)
         self._index = 0
         super().__init__()
 
-    @classmethod
-    def with_capacity(cls, capacity: int = 0) -> Self:
-        """Create a mutable vector with the given capacity."""
-        if capacity > sys.maxsize:
-            msg = f"Capacity {capacity} is too large."
-            raise OutofBoundsError(msg)
-        return cls([]) if capacity <= 0 else cls(None for _ in range(capacity))
+    @overload
+    def __getitem__(self, __index: int, /) -> T:
+        ...
 
-    def __eq__(self, __value: object) -> bool:
+    @overload
+    def __getitem__(self, __index: slice, /) -> Self:
+        ...
+
+    def __getitem__(self, __index):
+        """Return the item at the given index."""
+        if isinstance(__index, slice):
+            cls = type(self)
+            return cls(self._components[__index])
+        index = operator.index(__index)
+        return self._components[index]
+
+    def __iter__(self) -> Iterator:
+        """Return an iterator over the elements of this vector."""
+        return iter(self._components)
+
+    def __eq__(self, __other: object) -> bool:
         """Return True if the given object is equal to this vector."""
-        if not isinstance(__value, type(self)):
+        try:
+            return all(a == b for a, b in zip(self, __other, strict=True))  # type: ignore[call-overload]
+        except ValueError:
             return False
-        return self._items == __value._items
 
     def __repr__(self) -> str:
         """Return a string representation."""
-        return f"{type(self).__name__}({self._items!r})"
+        components = reprlib.repr(self._components).replace("[", "]").replace("]", "")
+        return f"{type(self).__name__}({components})"
 
     def __str__(self) -> str:
         """Return a string representation."""
-        return f"{type(self).__name__}({self._items!s})"
+        return str(tuple(self))
 
-    def __getitem__(self, index: int) -> T:
-        """Return the item at the given index."""
-        self._index = index
-        return self._items[index]
-
-    def __setitem__(self, index: int, value: T) -> None:
-        """Set the item at the given index."""
-        self._items.insert(index, value)
-
-    def __delitem__(self, index: int) -> None:
-        """Delete the item at the given index."""
-        self._items.pop(index)
+    def __hash__(self) -> int:
+        """Return the hash value of this vector."""
+        return sum(hash(x) for x in self._components)
 
     def __len__(self) -> int:
         """Return the number of items."""
-        return len(self._items)
-
-    def insert(self, __index: SupportsIndex, __object: T) -> None:
-        """Insert a value at the given index."""
-        self._items.insert(__index, __object)
+        return len(self._components)
 
     def skip(self, n: int) -> Self:
         """
@@ -75,7 +82,8 @@ class MutableVector[T](MutableSequence):
             foo = MutableVector([1, 2, 3])
             foo.skip(1)
         """
-        return type(self)(self._items[n:])
+        cls = type(self)
+        return cls(self._components[n:])
 
     def next(self) -> T | None:
         """
@@ -89,10 +97,64 @@ class MutableVector[T](MutableSequence):
             foo = MutableVector([1, 2, 3])
             foo.next()
         """
-        if self._index >= len(self._items):
+        if self._index >= len(self._components):
             return None
         self._index += 1
-        return self._items[self._index - 1]
+        return self._components[self._index - 1]
 
 
-MutableSequence.register(MutableVector)
+class MutableVector[T](ImutableVector, MutableSequence):
+
+    """A mutable Vector."""
+
+    @classmethod
+    def with_capacity(cls, capacity: int = 0) -> Self:
+        """Create a mutable vector with the given capacity."""
+        if capacity > sys.maxsize:
+            msg = f"Capacity {capacity} is too large."
+            raise OutofBoundsError(msg)
+        return cls([]) if capacity <= 0 else cls(None for _ in range(capacity))
+
+    @overload
+    def __getitem__(self, __index: int, /) -> T:
+        ...
+
+    @overload
+    def __getitem__(self, __index: slice, /) -> Self:
+        ...
+
+    def __getitem__(self, __index):
+        """Return the item at the given index."""
+        if isinstance(__index, slice):
+            cls = type(self)
+            return cls(self._components[__index])
+        index = operator.index(__index)
+        return self._components[index]
+
+    @overload
+    def __setitem__(self, index: int, value: T, /) -> None:
+        ...
+
+    @overload
+    def __setitem__(self, index: slice, value: Iterable[T], /) -> None:
+        ...
+
+    def __setitem__(self, index, value):
+        """Set the item at the given index."""
+        self._components.insert(index, value)
+
+    @overload
+    def __delitem__(self, index: int, /) -> None:
+        ...
+
+    @overload
+    def __delitem__(self, index: slice, /) -> None:
+        ...
+
+    def __delitem__(self, index):
+        """Delete the item at the given index."""
+        self._components.pop(index)
+
+    def insert(self, __index: SupportsIndex, __object: T) -> None:
+        """Insert a value at the given index."""
+        self._components.insert(__index, __object)
