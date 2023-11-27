@@ -1,16 +1,18 @@
 """Main module."""
 import sys
-from collections.abc import MutableSequence, Sequence
+from collections.abc import Iterable
 from functools import partial
 from pathlib import Path
-from typing import NoReturn
+from typing import IO, NoReturn
 
 from result import as_result
 
 from model import MutableVector
 
+type Pathlike = str | Path
 
-def show_lines(lines: Sequence[str]) -> None:
+
+def show_lines(lines: Iterable[str]) -> None:
     """Print the found lines."""
     if not lines:
         msg = "No matches found."
@@ -20,16 +22,25 @@ def show_lines(lines: Sequence[str]) -> None:
 
 
 @as_result(Exception)
-def find_lines(lines: MutableSequence[str], search_string: str) -> MutableVector[str]:
+def find_lines(lines: Iterable[str], search_string: str) -> MutableVector[str]:
     """Find the lines that match the given search string."""
     return MutableVector(line for line in lines if search_string in line)
 
 
 @as_result(Exception)
-def read_lines(path: Path) -> MutableVector[str]:
+def read_file(path: Pathlike) -> IO[str]:
+    """Read the given file."""
+    if isinstance(path, str):
+        path = Path(path)
+    return path.open("r", encoding="utf8")
+
+
+@as_result(Exception)
+def collect_lines(file: IO[str]) -> MutableVector[str]:
     """Read the lines from a given file."""
-    with path.open("r", encoding="utf8") as f:
-        return MutableVector(f.readlines())
+    vec = MutableVector(file.readlines())
+    file.close()
+    return vec
 
 
 def leave_on_missing_arg(msg: str) -> NoReturn:
@@ -38,7 +49,7 @@ def leave_on_missing_arg(msg: str) -> NoReturn:
     sys.exit(1)
 
 
-def extract_path_and_value(sys_args: MutableSequence[str]) -> tuple[str, str]:
+def extract_path_and_value(sys_args: Iterable[str]) -> tuple[str, str]:
     """Extract the path and search string from the command line arguments."""
     args = MutableVector(sys_args).skip(1)
     if (path := args.next()) is None:
@@ -50,7 +61,12 @@ def extract_path_and_value(sys_args: MutableSequence[str]) -> tuple[str, str]:
 
 def main() -> None:
     filename, search_string = extract_path_and_value(sys.argv)
-    read_lines(Path(filename)).and_then(partial(find_lines, search_string=search_string)).and_then(show_lines)
+    (
+        read_file(Path(filename))
+        .and_then(collect_lines)
+        .and_then(partial(find_lines, search_string=search_string))
+        .and_then(show_lines)
+    )
 
 
 if __name__ == "__main__":
