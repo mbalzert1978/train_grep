@@ -1,65 +1,73 @@
 """Main module."""
 from __future__ import annotations
 
+import pathlib
 import re
 import sys
-from argparse import ArgumentParser, Namespace
-from pathlib import Path
-from typing import TYPE_CHECKING, Protocol
+import typing
 
-if TYPE_CHECKING:
-    from collections.abc import Generator, Iterable, Sequence
+if typing.TYPE_CHECKING:
+    from collections.abc import Iterable
 
-
-class ArgumentParserLike(Protocol):
-
-    """Protocol for adding arguments to an ArgumentParser."""
-
-    def add_argument(self, *args: Sequence, **kwargs: str | type) -> None:
-        """Add an argument to the parser."""
-        ...
-
-    def parse_args(
-        self,
-        args: Sequence | None = None,
-        namespace: Namespace | None = None,
-    ) -> Namespace:
-        """Parse arguments."""
-        ...
+type Pathlike = str | pathlib.Path
 
 
-class FileRepository:
+class NoPathError(Exception):
 
-    """File repository."""
-
-    @staticmethod
-    def read_lines(path: Path) -> Generator[str, None, None]:
-        """Read lines from file."""
-        with path.open(encoding="utf8") as f:
-            yield from f.readlines()
+    """No path error."""
 
 
-def find(lines: Iterable, regex: str) -> Iterable:
+class NoRegexError(Exception):
+
+    """No regex error."""
+
+
+def parse_args[T](args: Iterable[T]) -> tuple[T, T]:
+    """Parse the arguments."""
+    iter_args = iter(args)
+    _ = next(iter_args)
+    if (path := _next(iter_args, None)) is None:
+        sys.exit("error: The following required arguments were not provided:\n\t <PATH>\n")
+    if (regex := _next(iter_args, None)) is None:
+        sys.exit("error: The following required arguments were not provided:\n\t <PATTERN>\n")
+    return path, regex
+
+
+def _next[T, U](iterator: typing.Iterator[T], default: U) -> T | U:
+    """Get the next element from the iterator or return the default."""
+    try:
+        return next(iterator)
+    except StopIteration:
+        return default
+
+
+def collect_lines_from(path: Pathlike) -> tuple[str, ...]:
+    """Collect lines from a pathlike."""
+    if isinstance(path, str):
+        path = pathlib.Path(path)
+    with path.open(encoding="utf8") as file:
+        return tuple(file)
+
+
+def find(lines: Iterable, regex: str) -> Iterable[str]:
     """Find the lines with the given regex."""
-    return filter(lambda line: re.compile(regex).search(line), lines)
+    for line in lines:
+        if re.search(regex, line):
+            yield line
 
 
 def show(found: Iterable) -> None:
     """Show the found lines."""
     for line in found:
-        _ = sys.stdout.write(line)
+        sys.stdout.write(line)
 
 
-def add_arguments(ap: ArgumentParserLike) -> ArgumentParserLike:
-    """Set up the argument parser."""
-    ap.add_argument("path", help="the path to the file.", type=Path)
-    ap.add_argument("regex", help="the regex to search for.")
-    return ap
-
-
-def main() -> None:  # noqa: D103
-    args = add_arguments(ArgumentParser()).parse_args()  # type: ignore [arg-type]
-    show(find(FileRepository.read_lines(args.path), args.regex))
+def main() -> None:
+    """Bootstrap."""
+    path, regex = parse_args(sys.argv)
+    lines = collect_lines_from(path)
+    found = find(lines, regex)
+    show(found)
 
 
 if __name__ == "__main__":
