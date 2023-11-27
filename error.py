@@ -13,7 +13,7 @@ def handle_error(event: ErrorEvent) -> None:
 
 def setup() -> None:
     """Register the error handler event."""
-    events.register_event(events.PathError, handle_error)
-    events.register_event(events.RegexError, handle_error)
-    events.register_event(events.NoFilesFound, handle_error)
-    events.register_event(events.NoLinesFound, handle_error)
+    events.register(events.PathError, handle_error)
+    events.register(events.RegexError, handle_error)
+    events.register(events.NoFilesFound, handle_error)
+    events.register(events.NoLinesFound, handle_error)

@@ -43,4 +43,4 @@ def collect_lines(event: events.ArgumentsParsed) -> None:
 
 def setup() -> None:
     """Register the collector event."""
-    events.register_event(events.ArgumentsParsed, collect_lines)
+    events.register(events.ArgumentsParsed, collect_lines)

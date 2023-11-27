@@ -16,4 +16,4 @@ def show(event: events.LinesFound) -> None:
 
 def setup() -> None:
     """Register the view event."""
-    events.register_event(events.LinesFound, show)
+    events.register(events.LinesFound, show)

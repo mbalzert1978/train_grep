@@ -12,4 +12,4 @@ def find(cmd: commands.FindLines) -> None:
 
 def setup() -> None:
     """Register the finder command."""
-    commands.register_command(commands.FindLines, find)
+    commands.register(commands.FindLines, find)

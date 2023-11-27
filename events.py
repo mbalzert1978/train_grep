@@ -81,7 +81,7 @@ class LinesShown(Event):
     """Lines shown event."""
 
 
-def register_event(event_type: type[Event], handler: typing.Callable) -> None:
+def register(event_type: type[Event], handler: typing.Callable) -> None:
     """Register an event."""
     subscribers[event_type].append(handler)
 

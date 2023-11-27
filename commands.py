@@ -20,7 +20,7 @@ class FindLines(Command):
     regex: str
 
 
-def register_command(command_type: type[Command], handler: typing.Callable) -> None:
+def register(command_type: type[Command], handler: typing.Callable) -> None:
     """Register a command."""
     subscribers[command_type] = handler
 
