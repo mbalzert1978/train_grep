@@ -1,6 +1,8 @@
 """Command module."""
 import dataclasses
-from collections.abc import Iterable
+import typing
+
+subscribers: dict[type["Command"], typing.Callable] = dict()
 
 
 @dataclasses.dataclass
@@ -9,20 +11,7 @@ class Command:
     """Command base class."""
 
 
-class ParseArguments[T](Command):
-
-    """Parse arguments command."""
-
-    args: Iterable[T]
-
-
-class CollectLines(Command):
-
-    """Collect lines command."""
-
-    path: str
-
-
+@dataclasses.dataclass
 class FindLines(Command):
 
     """Find lines command."""
@@ -31,15 +20,13 @@ class FindLines(Command):
     regex: str
 
 
-class ShowLines(Command):
-
-    """Show lines command."""
-
-    found: Iterable[str]
+def register_command(command_type: type[Command], handler: typing.Callable) -> None:
+    """Register a command."""
+    subscribers[command_type] = handler
 
 
-class Exit(Command):
-
-    """Exit command."""
-
-    msg: str
+def post_command(command: Command) -> None:
+    """Ivoke a command."""
+    if type(command) not in subscribers:
+        return
+    subscribers[type(command)](command)

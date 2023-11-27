@@ -1,6 +1,15 @@
 """Event classes for the application."""
 import dataclasses
+import typing
+from collections import defaultdict
 from collections.abc import Iterable
+
+if typing.TYPE_CHECKING:
+    import pathlib
+
+type Pathlike = str | pathlib.Path
+
+subscribers = defaultdict(list)
 
 
 @dataclasses.dataclass
@@ -14,7 +23,7 @@ class ArgumentsParsed(Event):
 
     """Arguments parsed event."""
 
-    path: str
+    path: Pathlike
     regex: str
 
 
@@ -30,6 +39,14 @@ class PathError(Event):
 class RegexError(Event):
 
     """Regex error event."""
+
+    message: str
+
+
+@dataclasses.dataclass
+class NoFilesFound(Event):
+
+    """No files found event."""
 
     message: str
 
@@ -62,3 +79,16 @@ class LinesFound(Event):
 class LinesShown(Event):
 
     """Lines shown event."""
+
+
+def register_event(event_type: type[Event], handler: typing.Callable) -> None:
+    """Register an event."""
+    subscribers[event_type].append(handler)
+
+
+def post_event(event: Event) -> None:
+    """Post an event to all subscribers."""
+    if type(event) not in subscribers:
+        return
+    for handler in subscribers[type(event)]:
+        handler(event)
