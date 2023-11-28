@@ -52,35 +52,30 @@ class Error(Event):
 
 
 @dataclasses.dataclass
-class PathError(Error):
+class NoPathGivenError(Error):
 
-    """Path error event."""
+    """No path given event."""
 
-    message: str
 
 
 @dataclasses.dataclass
-class RegexError(Error):
+class NoRegexGivenError(Error):
 
     """Regex error event."""
 
-    message: str
-
 
 @dataclasses.dataclass
-class NoFilesFoundError(Error):
+class PathNotFoundError(Error):
 
     """No files found event."""
 
-    message: str
+    path: Pathlike
 
 
 @dataclasses.dataclass
 class NoLinesFoundError(Error):
 
     """No lines found event."""
-
-    message: str
 
 
 def register(event_type: type[Event], handler: typing.Callable) -> None:

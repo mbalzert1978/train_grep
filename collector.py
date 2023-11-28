@@ -20,11 +20,11 @@ def parse(args: commands.ParseArgs) -> None:
     _ = next(iter_args)
     if (path := _next(iter_args, None)) is None:
         msg = "error: The following required arguments were not provided:\n\t <PATH>\n"
-        events.post_event(events.PathError(msg))
+        events.post_event(events.NoPathGivenError(msg))
         return
     if (regex := _next(iter_args, None)) is None:
         msg = "error: The following required arguments were not provided:\n\t <PATTERN>\n"
-        events.post_event(events.RegexError(msg))
+        events.post_event(events.NoRegexGivenError(msg))
         return
     events.post_event(events.ArgumentsParsed(path, regex))
 
@@ -38,7 +38,7 @@ def collect_lines(event: events.ArgumentsParsed) -> None:
         with path.open(encoding="utf8") as file:
             commands.post_command(commands.FindLines(tuple(file), event.regex))
     except FileNotFoundError:
-        events.post_event(events.NoFilesFoundError(message=f"File not found: {path}"))
+        events.post_event(events.PathNotFoundError(message=f"File not found: {path}", path=path))
 
 
 def setup() -> None:

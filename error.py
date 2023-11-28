@@ -3,7 +3,7 @@ import sys
 
 import events
 
-type ErrorEvent = events.PathError | events.RegexError | events.NoFilesFoundError | events.NoLinesFoundError
+type ErrorEvent = events.NoPathGivenError | events.NoRegexGivenError | events.PathNotFoundError | events.NoLinesFoundError
 
 
 def handle_error(event: ErrorEvent) -> None:
@@ -13,7 +13,7 @@ def handle_error(event: ErrorEvent) -> None:
 
 def setup() -> None:
     """Register the error handler event."""
-    events.register(events.PathError, handle_error)
-    events.register(events.RegexError, handle_error)
-    events.register(events.NoFilesFoundError, handle_error)
+    events.register(events.NoPathGivenError, handle_error)
+    events.register(events.NoRegexGivenError, handle_error)
+    events.register(events.PathNotFoundError, handle_error)
     events.register(events.NoLinesFoundError, handle_error)
