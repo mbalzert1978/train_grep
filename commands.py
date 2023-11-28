@@ -2,7 +2,7 @@
 import dataclasses
 import typing
 
-subscribers: dict[type["Command"], typing.Callable] = dict()
+subscribers: dict[type["Command"], typing.Callable] = {}
 
 
 @dataclasses.dataclass
