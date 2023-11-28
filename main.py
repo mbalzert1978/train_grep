@@ -2,6 +2,7 @@
 import sys
 
 import collector
+import commands
 import error
 import finder
 import view
@@ -18,7 +19,7 @@ def bootstrap() -> None:
 def main() -> None:
     """Bootstrap."""
     bootstrap()
-    collector.parse(sys.argv)
+    commands.post_command(commands.ParseArgs(sys.argv))
 
 
 if __name__ == "__main__":

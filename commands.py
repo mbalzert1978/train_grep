@@ -12,6 +12,14 @@ class Command:
 
 
 @dataclasses.dataclass
+class ParseArgs(Command):
+
+    """Parse arguments command."""
+
+    args: list[str]
+
+
+@dataclasses.dataclass
 class FindLines(Command):
 
     """Find lines command."""
