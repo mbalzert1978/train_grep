@@ -28,46 +28,6 @@ class ArgumentsParsed(Event):
 
 
 @dataclasses.dataclass
-class PathError(Event):
-
-    """Path error event."""
-
-    message: str
-
-
-@dataclasses.dataclass
-class RegexError(Event):
-
-    """Regex error event."""
-
-    message: str
-
-
-@dataclasses.dataclass
-class NoFilesFound(Event):
-
-    """No files found event."""
-
-    message: str
-
-
-@dataclasses.dataclass
-class NoLinesFound(Event):
-
-    """No lines found event."""
-
-    message: str
-
-
-@dataclasses.dataclass
-class LinesCollected(Event):
-
-    """Lines collected event."""
-
-    lines: tuple[str, ...]
-
-
-@dataclasses.dataclass
 class LinesFound(Event):
 
     """Lines found event."""
@@ -81,6 +41,46 @@ class LinesShown(Event):
     """Lines shown event."""
 
     line: str
+
+
+@dataclasses.dataclass
+class Error(Event):
+
+    """Error event."""
+
+    message: str
+
+
+@dataclasses.dataclass
+class PathError(Error):
+
+    """Path error event."""
+
+    message: str
+
+
+@dataclasses.dataclass
+class RegexError(Error):
+
+    """Regex error event."""
+
+    message: str
+
+
+@dataclasses.dataclass
+class NoFilesFoundError(Error):
+
+    """No files found event."""
+
+    message: str
+
+
+@dataclasses.dataclass
+class NoLinesFoundError(Error):
+
+    """No lines found event."""
+
+    message: str
 
 
 def register(event_type: type[Event], handler: typing.Callable) -> None:

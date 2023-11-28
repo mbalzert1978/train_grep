@@ -1,13 +1,10 @@
 """Collector module."""
-import functools
-import logging
 import pathlib
 import typing
 
 import commands
 import events
 
-logger = logging.getLogger(__name__)
 
 def _next[T, U](iterator: typing.Iterator[T], default: U) -> T | U:
     """Get the next element from the iterator or return the default."""
@@ -41,11 +38,10 @@ def collect_lines(event: events.ArgumentsParsed) -> None:
         with path.open(encoding="utf8") as file:
             commands.post_command(commands.FindLines(tuple(file), event.regex))
     except FileNotFoundError:
-        events.post_event(events.NoFilesFound(message=f"File not found: {path}"))
+        events.post_event(events.NoFilesFoundError(message=f"File not found: {path}"))
 
 
 def setup() -> None:
     """Register the collector event."""
-    events.register(events.ArgumentsParsed, functools.partial(logger.info, "Arguments parsed: %s"))
     events.register(events.ArgumentsParsed, collect_lines)
     commands.register(commands.ParseArgs, parse)
