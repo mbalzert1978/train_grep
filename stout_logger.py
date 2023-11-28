@@ -19,9 +19,9 @@ def info(event: events.Event) -> None:
     logger.info(event)
 
 
-def error(error: events.Error) -> None:
+def error(err_event: events.Error) -> None:
     """Log the event."""
-    logger.error(dataclasses.asdict(error))
+    logger.error(dataclasses.asdict(err_event))
 
 
 def setup() -> None:
