@@ -57,7 +57,6 @@ class NoPathGivenError(Error):
     """No path given event."""
 
 
-
 @dataclasses.dataclass
 class NoRegexGivenError(Error):
 
