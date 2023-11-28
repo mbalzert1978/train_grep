@@ -3,10 +3,8 @@ import sys
 
 import events
 
-type ErrorEvent = events.NoPathGivenError | events.NoRegexGivenError | events.PathNotFoundError | events.NoLinesFoundError
 
-
-def handle_error(event: ErrorEvent) -> None:
+def handle_error(event: events.Error) -> None:
     """Print the error message to stderr."""
     sys.stderr.write(event.message)
 
