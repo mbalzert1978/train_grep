@@ -80,6 +80,8 @@ class LinesShown(Event):
 
     """Lines shown event."""
 
+    line: str
+
 
 def register(event_type: type[Event], handler: typing.Callable) -> None:
     """Register an event."""

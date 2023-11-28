@@ -1,10 +1,13 @@
 """Collector module."""
+import functools
+import logging
 import pathlib
 import typing
 
 import commands
 import events
 
+logger = logging.getLogger(__name__)
 
 def _next[T, U](iterator: typing.Iterator[T], default: U) -> T | U:
     """Get the next element from the iterator or return the default."""
@@ -14,9 +17,9 @@ def _next[T, U](iterator: typing.Iterator[T], default: U) -> T | U:
         return default
 
 
-def parse(args: typing.Iterable[typing.Any]) -> None:
+def parse(args: commands.ParseArgs) -> None:
     """Parse the arguments."""
-    iter_args = iter(args)
+    iter_args = iter(args.args)
     _ = next(iter_args)
     if (path := _next(iter_args, None)) is None:
         msg = "error: The following required arguments were not provided:\n\t <PATH>\n"
@@ -43,4 +46,6 @@ def collect_lines(event: events.ArgumentsParsed) -> None:
 
 def setup() -> None:
     """Register the collector event."""
+    events.register(events.ArgumentsParsed, functools.partial(logger.info, "Arguments parsed: %s"))
     events.register(events.ArgumentsParsed, collect_lines)
+    commands.register(commands.ParseArgs, parse)
