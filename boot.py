@@ -1,8 +1,8 @@
 """Bootstrap the application."""
-import arg_parser
 import collector
 import error
 import finder
+import parsing
 import stout_logger
 import view
 
@@ -10,7 +10,7 @@ import view
 def bootstrap() -> None:
     """Set up the handler."""
     stout_logger.setup()
-    arg_parser.setup()
+    parsing.setup()
     collector.setup()
     finder.setup()
     view.setup()
