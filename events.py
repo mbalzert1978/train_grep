@@ -88,7 +88,7 @@ def register(event_type: type[Event], handler: typing.Callable[..., None]) -> No
     subscribers[event_type].append(handler)
 
 
-def post_event(event: Event) -> None:
+def emit(event: Event) -> None:
     """Post an event to all subscribers."""
     if type(event) not in subscribers:
         return

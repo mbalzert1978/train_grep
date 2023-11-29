@@ -8,11 +8,11 @@ def show(event: events.LinesCollected) -> None:
     """Show the found lines."""
     found = tuple(event.found)
     if not found:
-        events.post_event(events.NoLinesFoundError(message="No lines found."))
+        events.emit(events.NoLinesFoundError(message="No lines found."))
         return
     for line in found:
         sys.stdout.write(line)
-        events.post_event(events.LinesShown(line=line))
+        events.emit(events.LinesShown(line=line))
     return
 
 
