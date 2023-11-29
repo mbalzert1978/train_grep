@@ -19,6 +19,12 @@ class Event:
 
 
 @dataclasses.dataclass
+class StartUp(Event):
+
+    """Programm start Event."""
+
+
+@dataclasses.dataclass
 class ArgumentsParsed(Event):
 
     """Arguments parsed event."""
@@ -28,7 +34,7 @@ class ArgumentsParsed(Event):
 
 
 @dataclasses.dataclass
-class LinesFound(Event):
+class LinesCollected(Event):
 
     """Lines found event."""
 
