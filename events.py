@@ -83,7 +83,7 @@ class NoLinesFoundError(Error):
     """No lines found event."""
 
 
-def register(event_type: type[Event], handler: typing.Callable[[Event], None]) -> None:
+def register(event_type: type[Event], handler: typing.Callable[..., None]) -> None:
     """Register an event."""
     subscribers[event_type].append(handler)
 
