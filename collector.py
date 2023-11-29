@@ -1,28 +1,19 @@
 """Collector module."""
 import pathlib
-import typing
 
 import commands
 import events
-
-
-def _next[T, U](iterator: typing.Iterator[T], default: U) -> T | U:
-    """Get the next element from the iterator or return the default."""
-    try:
-        return next(iterator)
-    except StopIteration:
-        return default
 
 
 def parse(args: commands.ParseArgs) -> None:
     """Parse the arguments."""
     iter_args = iter(args.args)
     _ = next(iter_args)
-    if (path := _next(iter_args, None)) is None:
+    if (path := next(iter_args, None)) is None:
         msg = "error: The following required arguments were not provided:\n\t <PATH>\n"
         events.post_event(events.NoPathGivenError(msg))
         return
-    if (regex := _next(iter_args, None)) is None:
+    if (regex := next(iter_args, None)) is None:
         msg = "error: The following required arguments were not provided:\n\t <PATTERN>\n"
         events.post_event(events.NoRegexGivenError(msg))
         return
