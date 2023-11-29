@@ -4,7 +4,7 @@ import sys
 import events
 
 
-def show(event: events.LinesFound) -> None:
+def show(event: events.LinesCollected) -> None:
     """Show the found lines."""
     found = tuple(event.found)
     if not found:
@@ -18,4 +18,4 @@ def show(event: events.LinesFound) -> None:
 
 def setup() -> None:
     """Register the view event."""
-    events.register(events.LinesFound, show)
+    events.register(events.LinesCollected, show)
