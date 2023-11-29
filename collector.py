@@ -5,21 +5,6 @@ import commands
 import events
 
 
-def parse(args: commands.ParseArgs) -> None:
-    """Parse the arguments."""
-    iter_args = iter(args.args)
-    _ = next(iter_args)
-    if (path := next(iter_args, None)) is None:
-        msg = "error: The following required arguments were not provided:\n\t <PATH>\n"
-        events.post_event(events.NoPathGivenError(msg))
-        return
-    if (regex := next(iter_args, None)) is None:
-        msg = "error: The following required arguments were not provided:\n\t <PATTERN>\n"
-        events.post_event(events.NoRegexGivenError(msg))
-        return
-    events.post_event(events.ArgumentsParsed(path, regex))
-
-
 def collect_lines(event: events.ArgumentsParsed) -> None:
     """Collect lines from a pathlike."""
     path = event.path
@@ -35,4 +20,3 @@ def collect_lines(event: events.ArgumentsParsed) -> None:
 def setup() -> None:
     """Register the collector event."""
     events.register(events.ArgumentsParsed, collect_lines)
-    commands.register(commands.ParseArgs, parse)
