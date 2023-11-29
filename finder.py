@@ -7,7 +7,7 @@ import events
 
 def find(cmd: commands.FindLines) -> None:
     """Find the lines with the given regex."""
-    events.post_event(events.LinesFound(line for line in cmd.lines if re.search(cmd.regex, line)))
+    events.post_event(events.LinesCollected(line for line in cmd.lines if re.search(cmd.regex, line)))
 
 
 def setup() -> None:
