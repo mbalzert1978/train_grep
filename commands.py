@@ -33,7 +33,7 @@ def register(command_type: type[Command], handler: typing.Callable[..., None]) -
     subscribers[command_type] = handler
 
 
-def post_command(command: Command) -> None:
+def invoke(command: Command) -> None:
     """Ivoke a command."""
     if type(command) not in subscribers:
         return
