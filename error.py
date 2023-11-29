@@ -11,7 +11,5 @@ def handle_error(event: events.Error) -> None:
 
 def setup() -> None:
     """Register the error handler event."""
-    events.register(events.NoPathGivenError, handle_error)
-    events.register(events.NoRegexGivenError, handle_error)
-    events.register(events.PathNotFoundError, handle_error)
-    events.register(events.NoLinesFoundError, handle_error)
+    for err_event in events.Error.__subclasses__():
+        events.register(err_event, handle_error)
