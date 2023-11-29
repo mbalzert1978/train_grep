@@ -8,8 +8,8 @@ import events
 
 def main() -> None:
     """Bootstrap."""
-    events.post_event(events.StartUp())
-    commands.post_command(commands.ParseArgs(sys.argv))
+    events.emit(events.StartUp())
+    commands.invoke(commands.ParseArgs(sys.argv))
 
 
 if __name__ == "__main__":
