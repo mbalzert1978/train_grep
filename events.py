@@ -1,15 +1,13 @@
 """Event classes for the application."""
+from __future__ import annotations
+
+import collections
 import dataclasses
 import typing
-from collections import defaultdict
-from collections.abc import Iterable
 
 if typing.TYPE_CHECKING:
     import pathlib
-
-type Pathlike = str | pathlib.Path
-
-subscribers = defaultdict(list)
+    from collections.abc import Iterable
 
 
 @dataclasses.dataclass
@@ -83,14 +81,17 @@ class NoLinesFoundError(Error):
     """No lines found event."""
 
 
-def register(event_type: type[Event], handler: typing.Callable[..., None]) -> None:
+subscribers = collections.defaultdict(list)
+type Pathlike = str | pathlib.Path
+
+
+def register[T: Event](event_type: type[T], handler: typing.Callable[[T], None]) -> None:
     """Register an event."""
     subscribers[event_type].append(handler)
 
 
-def emit(event: Event) -> None:
-    """Post an event to all subscribers."""
-    if type(event) not in subscribers:
-        return
-    for handler in subscribers[type(event)]:
-        handler(event)
+def emit[T: Event](event: T) -> None:
+    """Emit an event to all subscribers."""
+    if type(event) in subscribers:
+        for handler in subscribers[type(event)]:
+            handler(event)

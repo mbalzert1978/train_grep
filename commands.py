@@ -1,8 +1,8 @@
 """Command module."""
+from __future__ import annotations
+
 import dataclasses
 import typing
-
-subscribers: dict[type["Command"], typing.Callable] = {}
 
 
 @dataclasses.dataclass
@@ -28,13 +28,16 @@ class FindLines(Command):
     regex: str
 
 
-def register(command_type: type[Command], handler: typing.Callable[..., None]) -> None:
+T = typing.TypeVar("T", bound=Command)
+subscribers: dict[type[Command], typing.Callable[[T], None]] = {}
+
+
+def register(command_type: type[T], handler: typing.Callable[[T], None]) -> None:
     """Register a command."""
     subscribers[command_type] = handler
 
 
 def invoke(command: Command) -> None:
-    """Ivoke a command."""
-    if type(command) not in subscribers:
-        return
-    subscribers[type(command)](command)
+    """Invoke a command."""
+    if type(command) in subscribers:
+        subscribers[type(command)](command)
