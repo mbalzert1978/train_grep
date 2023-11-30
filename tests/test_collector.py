@@ -7,12 +7,17 @@ import commands
 import events
 
 
-def test_collect_lines_with_str_path():
-    # Arrange
-    msg = "test line"
+def setup_test_file(msg: str) -> tempfile._TemporaryFileWrapper:
     fp = tempfile.NamedTemporaryFile(delete_on_close=False)
     fp.write(msg.encode())
     fp.close()
+    return fp
+
+
+def test_collect_lines_with_str_path():
+    # Arrange
+    msg = "test line"
+    fp = setup_test_file(msg)
     event = events.ArgumentsParsed(path=fp.name, regex="test")
     commands.invoke = MagicMock()
 
