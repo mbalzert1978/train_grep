@@ -23,7 +23,7 @@ repos:
     rev: 23.11.0
     hooks:
     - id: black
-      args: [--target-version, py312]
+      args: [--target-version, py311]
 -   repo: https://github.com/adamchainz/blacken-docs
     rev: 1.13.0
     hooks:
