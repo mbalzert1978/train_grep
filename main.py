@@ -3,12 +3,10 @@ import sys
 
 import boot
 import commands
-import events
 
 
 def main() -> None:
     """Bootstrap."""
-    events.emit(events.StartUp())
     commands.invoke(commands.ParseArgs(sys.argv))
 
 

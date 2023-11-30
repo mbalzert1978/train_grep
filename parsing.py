@@ -6,6 +6,7 @@ import events
 
 def parse(args: commands.ParseArgs) -> None:
     """Parse the arguments."""
+    events.emit(events.StartUp())
     iter_args = iter(args.args)
     _ = next(iter_args)
     if (path := next(iter_args, None)) is None:
