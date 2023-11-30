@@ -5,6 +5,7 @@ from unittest.mock import MagicMock
 import collector
 import commands
 import events
+import pytest
 
 
 def setup_test_file(msg: str) -> tempfile._TemporaryFileWrapper:
@@ -14,13 +15,12 @@ def setup_test_file(msg: str) -> tempfile._TemporaryFileWrapper:
     return fp
 
 
-def test_collect_lines_with_str_path():
+def test_collect_lines(monkeypatch: pytest.MonkeyPatch) -> None:
     # Arrange
     msg = "test line"
     fp = setup_test_file(msg)
     event = events.ArgumentsParsed(path=fp.name, regex="test")
-    commands.invoke = MagicMock()
-
+    monkeypatch.setattr(commands, "invoke", MagicMock())
     # Act
     collector.collect_lines(event)
 
@@ -28,11 +28,10 @@ def test_collect_lines_with_str_path():
     commands.invoke.assert_called_once_with(commands.FindLines((msg,), "test"))
 
 
-def test_collect_lines_with_file_not_found():
+def test_collect_lines_with_file_not_found(monkeypatch: pytest.MonkeyPatch):
     # Arrange
     event = events.ArgumentsParsed(path="nonexistent.txt", regex="test")
-    events.emit = MagicMock()
-
+    monkeypatch.setattr(events, "emit", MagicMock())
     # Act
     collector.collect_lines(event)
 
@@ -43,3 +42,12 @@ def test_collect_lines_with_file_not_found():
             path=pathlib.PosixPath("nonexistent.txt"),
         )
     )
+
+
+@pytest.mark.usefixtures("cleanup")
+def test_setup() -> None:
+    assert not events.subscribers
+
+    collector.setup()
+
+    assert events.ArgumentsParsed in events.subscribers
