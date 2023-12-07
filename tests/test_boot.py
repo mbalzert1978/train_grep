@@ -1,4 +1,4 @@
-import stout_logger
+import stdout_logger
 import parsing
 import collector
 import finder
@@ -11,7 +11,7 @@ import pytest
 
 def test_bootstrap(monkeypatch: pytest.MonkeyPatch) -> None:
     # Arrange
-    monkeypatch.setattr(stout_logger, "setup", MagicMock())
+    monkeypatch.setattr(stdout_logger, "setup", MagicMock())
     monkeypatch.setattr(parsing, "setup", MagicMock())
     monkeypatch.setattr(collector, "setup", MagicMock())
     monkeypatch.setattr(finder, "setup", MagicMock())
@@ -22,7 +22,7 @@ def test_bootstrap(monkeypatch: pytest.MonkeyPatch) -> None:
     bootstrap()
 
     # Assert
-    stout_logger.setup.assert_called_once()
+    stdout_logger.setup.assert_called_once()
     parsing.setup.assert_called_once()
     collector.setup.assert_called_once()
     finder.setup.assert_called_once()

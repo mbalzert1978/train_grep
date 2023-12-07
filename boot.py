@@ -3,13 +3,13 @@ import collector
 import error
 import finder
 import parsing
-import stout_logger
+import stdout_logger
 import view
 
 
 def bootstrap() -> None:
     """Set up the handler."""
-    stout_logger.setup()
+    stdout_logger.setup()
     parsing.setup()
     collector.setup()
     finder.setup()
