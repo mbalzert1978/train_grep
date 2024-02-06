@@ -36,6 +36,9 @@ MANIFEST
 *.manifest
 *.spec
 
+# Log related Folder
+logs/
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
