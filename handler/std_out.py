@@ -8,12 +8,12 @@ from resources import string
 def print_lines(event: events.LinesFound) -> None:
     """Print the found lines."""
     match list(event.found):
-        case []:
-            events.emit(events.NoLinesFoundError(message=string.NO_LINES_MSG))
         case [*found]:
             for line in found:
                 sys.stdout.write(line)
                 events.emit(events.LinesShown(line=line))
+        case []:
+            events.emit(events.NoLinesFoundError(message=string.NO_LINES_MSG))
         case _:
             events.emit(events.UnreachableError(message=string.UNREACHABLE_ERROR))
 
