@@ -28,7 +28,7 @@ line-length = 119
 target-version = ['py312']
 
 [tool.ruff]
-target-version = "py312"
+target-version = "py311"
 select = [
     "A",
     "B",
@@ -74,5 +74,5 @@ select = [
     "YTT",
 ]
 line-length = 119
-ignore = ["ANN001", "ANN101", "ANN102", "D211", "D212", "PGH003"]
+ignore = ["ANN001", "ANN101", "ANN102", "D211", "D212", "PGH003", "D107"]
 exclude = ["tests"]
