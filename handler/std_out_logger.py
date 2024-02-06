@@ -1,10 +1,15 @@
 """Log events to stdout."""
 import dataclasses
 import logging
+import sys
 
 import events
+from resources import string
 
-logging.basicConfig(filename="stout.log", format="%(asctime)s %(levelname)s %(name)s %(message)s", level=logging.INFO)
+LEVEL = logging.INFO
+STREAM = sys.stdout
+
+logging.basicConfig(format=string.FORMAT, level=LEVEL, stream=STREAM)
 logger = logging.getLogger(__name__)
 
 
