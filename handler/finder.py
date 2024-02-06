@@ -5,11 +5,11 @@ import commands
 import events
 
 
-def find(cmd: commands.FindLines) -> None:
-    """Find the lines with the given regex."""
-    events.emit(events.LinesCollected(line for line in cmd.lines if re.search(cmd.regex, line)))
+def search_pattern(cmd: commands.FindLines) -> None:
+    """Find the lines with the given pattern."""
+    events.emit(events.LinesCollected(line for line in cmd.lines if re.search(cmd.pattern, line)))
 
 
 def setup() -> None:
     """Register the finder command."""
-    commands.register(commands.FindLines, find)
+    commands.register(commands.FindLines, search_pattern)

@@ -6,12 +6,12 @@ import events
 from resources import string
 
 
-def collect_lines(event: events.ArgumentsParsed) -> None:
+def fetch_lines(event: events.ArgumentsParsed) -> None:
     """Collect lines from a pathlike."""
     path = pathlib.Path(event.path)
     try:
         with path.open(encoding=string.ENCODING) as file:
-            commands.invoke(commands.FindLines(tuple(file), event.regex))
+            commands.invoke(commands.FindLines(tuple(file), event.pattern))
     except FileNotFoundError:
         events.emit(events.PathNotFoundError(message=string.NOT_FOUND_MSG.format(path=path), path=path))
     except PermissionError:
@@ -22,4 +22,4 @@ def collect_lines(event: events.ArgumentsParsed) -> None:
 
 def setup() -> None:
     """Register the collector event."""
-    events.register(events.ArgumentsParsed, collect_lines)
+    events.register(events.ArgumentsParsed, fetch_lines)

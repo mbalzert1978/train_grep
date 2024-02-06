@@ -32,7 +32,7 @@ class ArgumentsParsed(Event):
     """Arguments parsed event."""
 
     path: Pathlike
-    regex: str
+    pattern: str
 
 
 @dataclasses.dataclass
@@ -66,7 +66,7 @@ class NoPathGivenError(Error):
 
 
 @dataclasses.dataclass
-class NoRegexGivenError(Error):
+class NoPatternGivenError(Error):
 
     """Regex error event."""
 

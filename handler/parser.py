@@ -12,7 +12,7 @@ def parse(cmd: commands.ParseArgs) -> None:
         case [_, path, regex]:
             events.emit(events.ArgumentsParsed(path, regex))
         case [_, path]:
-            events.emit(events.NoRegexGivenError(string.PATTERN_ERROR))
+            events.emit(events.NoPatternGivenError(string.PATTERN_ERROR))
         case [_]:
             events.emit(events.NoPathGivenError(string.PATH_ERROR))
         case _:

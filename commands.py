@@ -28,7 +28,7 @@ class FindLines(Command):
     """Find lines command."""
 
     lines: tuple[str, ...]
-    regex: str
+    pattern: str
 
 
 def register(command_type: type[_TC], handler: typing.Callable[[_TC], None]) -> None:
