@@ -1,6 +1,7 @@
 """Handler lib."""
 from handler import (
     file_handler,
+    file_logger,
     finder,
     parser,
     std_out_error_handler,
@@ -10,6 +11,7 @@ from handler import (
 
 __all__ = [
     "file_handler",
+    "file_logger",
     "finder",
     "parser",
     "std_out_error_handler",
