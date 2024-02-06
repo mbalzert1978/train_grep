@@ -2,7 +2,8 @@
 import datetime as dt
 import json
 import logging
-from typing import override
+from collections.abc import Mapping
+from typing import Any, Literal, override
 
 LOG_RECORD_BUILTIN_ATTRS = {
     "args",
@@ -30,6 +31,8 @@ LOG_RECORD_BUILTIN_ATTRS = {
     "taskName",
 }
 
+_FormatStyle = Literal["%", "{", "$"]
+
 
 class MyJSONFormatter(logging.Formatter):
 
@@ -37,11 +40,16 @@ class MyJSONFormatter(logging.Formatter):
 
     def __init__(
         self,
+        fmt: str | None = None,
+        datefmt: str | None = None,
+        style: _FormatStyle = "%",
         *,
+        validate: bool = True,
+        defaults: Mapping[str, Any] | None = None,
         fmt_keys: dict[str, str] | None = None,
     ) -> None:
-        super().__init__()
-        self.fmt_keys = fmt_keys if fmt_keys is not None else {}
+        self.fmt_keys = fmt_keys or {}
+        super().__init__(fmt, datefmt, style, validate, defaults=defaults)
 
     @override
     def format(self, record: logging.LogRecord) -> str:
@@ -53,6 +61,7 @@ class MyJSONFormatter(logging.Formatter):
             "message": record.getMessage(),
             "timestamp": dt.datetime.fromtimestamp(record.created, tz=dt.UTC).isoformat(),
         }
+
         if record.exc_info is not None:
             always_fields["exc_info"] = self.formatException(record.exc_info)
 
@@ -63,11 +72,13 @@ class MyJSONFormatter(logging.Formatter):
             key: msg_val if (msg_val := always_fields.pop(val, None)) is not None else getattr(record, val)
             for key, val in self.fmt_keys.items()
         }
-        message.update(always_fields)
+
+        message |= always_fields
 
         for key, val in record.__dict__.items():
-            if key not in LOG_RECORD_BUILTIN_ATTRS:
-                message[key] = val
+            if key in LOG_RECORD_BUILTIN_ATTRS:
+                continue
+            message[key] = val
 
         return message
 
