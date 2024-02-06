@@ -20,6 +20,9 @@ coverage = "^7.3.2"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.mypy]
+exclude = ["tests"]
+
 [tool.black]
 line-length = 119
 target-version = ['py310']
