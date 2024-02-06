@@ -8,7 +8,7 @@ import commands
 
 def main(args: typing.Sequence[str]) -> None:
     """Bootstrap."""
-    boot.bootstrap()
+    boot.bootstrap("none")
     commands.invoke(commands.ParseArgs(args))
 
 
