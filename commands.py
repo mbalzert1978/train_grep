@@ -19,7 +19,7 @@ class ParseArgs(Command):
 
     """Parse arguments command."""
 
-    args: list[str]
+    args: typing.Sequence[str]
 
 
 @dataclasses.dataclass
