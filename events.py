@@ -60,6 +60,12 @@ class Error(Event):
 
 
 @dataclasses.dataclass
+class UnreachableError(Error):
+
+    """Unreachable error event."""
+
+
+@dataclasses.dataclass
 class NoPathGivenError(Error):
 
     """No path given event."""

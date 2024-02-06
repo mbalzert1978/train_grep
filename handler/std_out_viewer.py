@@ -15,7 +15,7 @@ def print_lines(event: events.LinesCollected) -> None:
                 sys.stdout.write(line)
                 events.emit(events.LinesShown(line=line))
         case _:
-            events.emit(events.Error(message=string.UNREACHABLE_ERROR))
+            events.emit(events.UnreachableError(message=string.UNREACHABLE_ERROR))
 
 
 def setup() -> None:

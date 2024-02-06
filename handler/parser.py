@@ -1,5 +1,4 @@
 """Parser module."""
-
 import commands
 import events
 from resources import string
@@ -16,7 +15,7 @@ def parse(cmd: commands.ParseArgs) -> None:
         case [_]:
             events.emit(events.NoPathGivenError(string.PATH_ERROR))
         case _:
-            events.emit(events.Error(string.UNREACHABLE_ERROR))
+            events.emit(events.UnreachableError(string.UNREACHABLE_ERROR))
 
 
 def setup() -> None:

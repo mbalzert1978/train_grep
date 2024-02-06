@@ -50,12 +50,12 @@ def test_parser_no_pattern_argument_set_emits_no_pattern_given_error(register) -
 
 def test_parser_error_on_transfering_args_emits_error(register) -> None:
     # Arrange
-    stub: CallableStub[events.Error]
-    stub = register(CallableStub(), events.Error)
+    stub: CallableStub[events.UnreachableError]
+    stub = register(CallableStub(), events.UnreachableError)
     cmd = commands.ParseArgs([])
 
     # Act
     handler.parser.parse(cmd)
 
     # Assert
-    assert isinstance(stub.called_with.pop(), events.Error)
+    assert isinstance(stub.called_with.pop(), events.UnreachableError)
