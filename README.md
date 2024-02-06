@@ -1,7 +1,7 @@
 # Readme
 
 ## Description
-This Python script, `pattern_search.py`, is designed to search for a given pattern within a text file and return the lines where the pattern is found. It provides a simple and efficient way to extract specific lines from a file based on user-defined patterns.
+This Python script, `train_grep_python.py`, is designed to search for a given pattern within a text file and return the lines where the pattern is found. It provides a simple and efficient way to extract specific lines from a file based on user-defined patterns.
 
 ## Features
 - **Pattern Search**: The script efficiently scans through the lines of a text file and identifies lines containing the specified pattern.
@@ -12,8 +12,8 @@ This Python script, `pattern_search.py`, is designed to search for a given patte
 To use the script, follow these steps:
 
 1. Ensure you have Python installed on your system.
-2. Download `pattern_search.py` and save it in your desired directory.
-3. Open a terminal or command prompt and navigate to the directory where `pattern_search.py` is saved.
+2. Download `train_grep_python.py` and save it in your desired directory.
+3. Open a terminal or command prompt and navigate to the directory where `train_grep_python.py` is saved.
 4. Run the script using the following command:
    ```
    python pattern_search.py <file_path> <pattern>
@@ -49,4 +49,4 @@ Line containing the search_pattern.
 - If no lines containing the specified pattern are found, the script will indicate that no matches were found.
 
 ## Compatibility
-This script is compatible with Python 3.x.
+This script is compatible with Python 3.10+.
