@@ -68,7 +68,7 @@ class NoPathGivenError(Error):
 @dataclasses.dataclass
 class NoPatternGivenError(Error):
 
-    """Regex error event."""
+    """Pattern error event."""
 
 
 @dataclasses.dataclass

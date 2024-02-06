@@ -9,8 +9,8 @@ def parse(cmd: commands.ParseArgs) -> None:
     """Parse the arguments."""
     events.emit(events.StartUp())
     match cmd.args:
-        case [_, path, regex]:
-            events.emit(events.ArgumentsParsed(path, regex))
+        case [_, path, pattern]:
+            events.emit(events.ArgumentsParsed(path, pattern))
         case [_, path]:
             events.emit(events.NoPatternGivenError(string.PATTERN_ERROR))
         case [_]:
