@@ -1,9 +1,4 @@
-import stdout_logger
-import parsing
-import collector
-import finder
-import view
-import error
+import handler
 from boot import bootstrap
 from unittest.mock import MagicMock
 import pytest
@@ -11,20 +6,20 @@ import pytest
 
 def test_bootstrap(monkeypatch: pytest.MonkeyPatch) -> None:
     # Arrange
-    monkeypatch.setattr(stdout_logger, "setup", MagicMock())
-    monkeypatch.setattr(parsing, "setup", MagicMock())
-    monkeypatch.setattr(collector, "setup", MagicMock())
-    monkeypatch.setattr(finder, "setup", MagicMock())
-    monkeypatch.setattr(view, "setup", MagicMock())
-    monkeypatch.setattr(error, "setup", MagicMock())
+    monkeypatch.setattr(handler.std_out_logger, "setup", MagicMock())
+    monkeypatch.setattr(handler.parser, "setup", MagicMock())
+    monkeypatch.setattr(handler.file_handler, "setup", MagicMock())
+    monkeypatch.setattr(handler.finder, "setup", MagicMock())
+    monkeypatch.setattr(handler.std_out_viewer, "setup", MagicMock())
+    monkeypatch.setattr(handler.std_out_error_handler, "setup", MagicMock())
 
     # Act
     bootstrap()
 
     # Assert
-    stdout_logger.setup.assert_called_once()
-    parsing.setup.assert_called_once()
-    collector.setup.assert_called_once()
-    finder.setup.assert_called_once()
-    view.setup.assert_called_once()
-    error.setup.assert_called_once()
+    handler.std_out_logger.setup.assert_called_once()
+    handler.parser.setup.assert_called_once()
+    handler.file_handler.setup.assert_called_once()
+    handler.finder.setup.assert_called_once()
+    handler.std_out_viewer.setup.assert_called_once()
+    handler.std_out_error_handler.setup.assert_called_once()
