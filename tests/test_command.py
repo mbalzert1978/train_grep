@@ -8,6 +8,7 @@ from tests.stub import CallableStub
 def test_invoke(register) -> None:
     # Arrange
     assert not commands.subscribers
+    stub: CallableStub[commands.Command]
     stub = register(CallableStub(), commands.Command)
 
     # Act

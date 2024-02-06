@@ -1,8 +1,9 @@
+import pytest
 import events
 import handler
 
 
-def test_std_out_error_handler_writes_error_to_std_err(capsys) -> None:
+def test_std_out_error_handler_writes_error_to_std_err(capsys: pytest.CaptureFixture[str]) -> None:
     # Arrange
     expected = "Error Message"
 
