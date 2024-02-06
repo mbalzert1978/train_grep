@@ -12,13 +12,13 @@ LEVEL = logging.INFO
 STREAM = sys.stdout
 
 
-def log_info(event: events.Event) -> None:
+def handle_info(event: events.Event) -> None:
     """Log the event."""
     logger = logging.getLogger(__name__)
     logger.info(event)
 
 
-def log_error(err_event: events.Error) -> None:
+def handle_error(err_event: events.Error) -> None:
     """Log the event."""
     logger = logging.getLogger(__name__)
     logger.error(dataclasses.asdict(err_event))
@@ -28,9 +28,9 @@ def setup() -> None:
     """Register the logger events."""
     _setup_logging()
     for event in events.Event.__subclasses__():
-        events.register(event, log_info)
+        events.register(event, handle_info)
     for err_event in events.Error.__subclasses__():
-        events.register(err_event, log_error)
+        events.register(err_event, handle_error)
 
 
 def _setup_logging() -> None:

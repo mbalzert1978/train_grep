@@ -17,7 +17,7 @@ def test_fetch_lines_invokes_find_lines(register) -> None:
     event = events.ArgumentsParsed(path=file.name, pattern=resources.PATTERN)
 
     # Act
-    handler.file_handler.fetch_lines(event)
+    handler.file.fetch_lines(event)
 
     # Assert
     assert stub.called_with.pop().lines == resources.LINES
@@ -31,7 +31,7 @@ def test_fetch_lines_directory_error_invokes_path_is_directory_error(register) -
         event = events.ArgumentsParsed(path=directory, pattern=resources.PATTERN)
 
         # Act
-        handler.file_handler.fetch_lines(event)
+        handler.file.fetch_lines(event)
 
     # Assert
     assert isinstance(stub.called_with.pop(), events.PathIsADirectoryError)
@@ -44,7 +44,7 @@ def test_fetch_lines_with_file_not_found_invokes_not_found_error(register):
     event = events.ArgumentsParsed(path=resources.NOT_FOUND_PATH, pattern=resources.PATTERN)
 
     # Act
-    handler.file_handler.fetch_lines(event)
+    handler.file.fetch_lines(event)
 
     # Assert
     assert isinstance(stub.called_with.pop(), events.PathNotFoundError)

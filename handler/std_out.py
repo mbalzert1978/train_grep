@@ -6,7 +6,7 @@ from resources import string
 
 
 def print_lines(event: events.LinesFound) -> None:
-    """Show the found lines."""
+    """Print the found lines."""
     match list(event.found):
         case []:
             events.emit(events.NoLinesFoundError(message=string.NO_LINES_MSG))

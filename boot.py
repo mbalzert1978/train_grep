@@ -4,9 +4,9 @@ import handler
 
 def bootstrap() -> None:
     """Bootstrap the application."""
-    handler.std_out_logger.setup()
-    handler.parser.setup()
-    handler.file_handler.setup()
-    handler.finder.setup()
-    handler.std_out_viewer.setup()
-    handler.std_out_error_handler.setup()
+    handler.logger.setup()
+    handler.args.setup()
+    handler.file.setup()
+    handler.lines.setup()
+    handler.std_out.setup()
+    handler.std_err.setup()

@@ -12,7 +12,7 @@ def test_parser_all_arguments_set_emits_arguments_parsed(register) -> None:
     cmd = commands.ParseArgs(resources.ARGS)
 
     # Act
-    handler.parser.parse(cmd)
+    handler.args.parse(cmd)
 
     # Assert
     result = stub.called_with.pop()
@@ -29,7 +29,7 @@ def test_parser_no_arguments_set_emits_no_path_given_error(register) -> None:
     cmd = commands.ParseArgs([resources.ARGS[0]])
 
     # Act
-    handler.parser.parse(cmd)
+    handler.args.parse(cmd)
 
     # Assert
     assert isinstance(stub.called_with.pop(), events.NoPathGivenError)
@@ -42,7 +42,7 @@ def test_parser_no_pattern_argument_set_emits_no_pattern_given_error(register) -
     cmd = commands.ParseArgs(resources.ARGS[:-1])
 
     # Act
-    handler.parser.parse(cmd)
+    handler.args.parse(cmd)
 
     # Assert
     assert isinstance(stub.called_with.pop(), events.NoPatternGivenError)
@@ -55,7 +55,7 @@ def test_parser_error_on_transfering_args_emits_error(register) -> None:
     cmd = commands.ParseArgs([])
 
     # Act
-    handler.parser.parse(cmd)
+    handler.args.parse(cmd)
 
     # Assert
     assert isinstance(stub.called_with.pop(), events.UnreachableError)
