@@ -108,6 +108,7 @@ def register(event_type: type[_TE], handler: typing.Callable[[_TE], None]) -> No
 
 def emit(event: _TE) -> None:
     """Emit an event to all subscribers."""
-    if type(event) in subscribers:
-        for handler in subscribers[type(event)]:
-            handler(event)
+    if type(event) not in subscribers:
+        return
+    for handler in subscribers[type(event)]:
+        handler(event)

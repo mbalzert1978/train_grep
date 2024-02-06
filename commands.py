@@ -38,5 +38,6 @@ def register(command_type: type[_TC], handler: typing.Callable[[_TC], None]) -> 
 
 def invoke(command: Command) -> None:
     """Invoke a command."""
-    if type(command) in subscribers:
-        subscribers[type(command)](command)
+    if type(command) not in subscribers:
+        return
+    subscribers[type(command)](command)
