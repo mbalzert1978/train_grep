@@ -1,53 +1,50 @@
-import pathlib
 import tempfile
-from unittest.mock import MagicMock
 
 import handler
 import commands
 import events
-import pytest
+
+from tests.stub import CallableStub
+from tests import resources
 
 
-def setup_test_file(msg: str) -> tempfile._TemporaryFileWrapper:
-    fp = tempfile.NamedTemporaryFile(delete=False)
-    fp.write(msg.encode())
-    fp.close()
-    return fp
-
-
-def test_collect_lines(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_fetch_lines_invokes_find_lines(register) -> None:
     # Arrange
-    msg = "test line"
-    fp = setup_test_file(msg)
-    event = events.ArgumentsParsed(path=fp.name, pattern="test")
-    monkeypatch.setattr(commands, "invoke", MagicMock())
+    stub: CallableStub[commands.FindLines]
+    stub = register(CallableStub(), commands.FindLines)
+    with tempfile.NamedTemporaryFile(delete=False) as file:
+        file.writelines(line.encode() for line in resources.LINES)
+    event = events.ArgumentsParsed(path=file.name, pattern=resources.PATTERN)
+
     # Act
     handler.file_handler.fetch_lines(event)
 
     # Assert
-    commands.invoke.assert_called_once_with(commands.FindLines((msg,), "test"))
+    assert stub.called_with.pop().lines == resources.LINES
 
 
-def test_collect_lines_with_file_not_found(monkeypatch: pytest.MonkeyPatch):
+def test_fetch_lines_directory_error_invokes_path_is_directory_error(register) -> None:
     # Arrange
-    event = events.ArgumentsParsed(path="nonexistent.txt", pattern="test")
-    monkeypatch.setattr(events, "emit", MagicMock())
+    stub: CallableStub[events.PathIsADirectoryError]
+    stub = register(CallableStub(), events.PathIsADirectoryError)
+    with tempfile.TemporaryDirectory() as directory:
+        event = events.ArgumentsParsed(path=directory, pattern=resources.PATTERN)
+
+        # Act
+        handler.file_handler.fetch_lines(event)
+
+    # Assert
+    assert isinstance(stub.called_with.pop(), events.PathIsADirectoryError)
+
+
+def test_fetch_lines_with_file_not_found_invokes_not_found_error(register):
+    # Arrange
+    stub: CallableStub[events.PathNotFoundError]
+    stub = register(CallableStub(), events.PathNotFoundError)
+    event = events.ArgumentsParsed(path=resources.NOT_FOUND_PATH, pattern=resources.PATTERN)
+
     # Act
     handler.file_handler.fetch_lines(event)
 
     # Assert
-    events.emit.assert_called_once_with(
-        events.PathNotFoundError(
-            message="File not found: nonexistent.txt",
-            path=pathlib.PosixPath("nonexistent.txt"),
-        )
-    )
-
-
-@pytest.mark.usefixtures("cleanup")
-def test_setup() -> None:
-    assert not events.subscribers
-
-    handler.file_handler.setup()
-
-    assert events.ArgumentsParsed in events.subscribers
+    assert isinstance(stub.called_with.pop(), events.PathNotFoundError)
