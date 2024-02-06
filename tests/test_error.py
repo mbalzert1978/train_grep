@@ -1,7 +1,7 @@
 import dataclasses
 
 import pytest
-import error
+import handler
 import events
 
 
@@ -11,7 +11,7 @@ class ErrorStub:
 
 
 def test_handle(capsys) -> None:
-    error.handle_error(ErrorStub("foo"))
+    handler.std_out_error_handler.handle_error(ErrorStub("foo"))
 
     out, err = capsys.readouterr()
 
@@ -23,6 +23,6 @@ def test_handle(capsys) -> None:
 def test_setup() -> None:
     assert not events.subscribers
 
-    error.setup()
+    handler.std_out_error_handler.setup()
 
     assert events.Error.__subclasses__() == list(events.subscribers)

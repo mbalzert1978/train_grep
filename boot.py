@@ -1,17 +1,12 @@
 """Bootstrap the application."""
-import collector
-import error
-import finder
-import parsing
-import stdout_logger
-import view
+import handler
 
 
 def bootstrap() -> None:
     """Set up the handler."""
-    stdout_logger.setup()
-    parsing.setup()
-    collector.setup()
-    finder.setup()
-    view.setup()
-    error.setup()
+    handler.std_out_logger.setup()
+    handler.parser.setup()
+    handler.file_handler.setup()
+    handler.finder.setup()
+    handler.std_out_viewer.setup()
+    handler.std_out_error_handler.setup()

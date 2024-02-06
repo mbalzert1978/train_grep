@@ -3,8 +3,11 @@ import dataclasses
 import logging
 
 import events
+from resources import string
 
-logging.basicConfig(filename="stout.log", format="%(asctime)s %(levelname)s %(name)s %(message)s", level=logging.INFO)
+LEVEL = logging.INFO
+
+logging.basicConfig(filename=string.FILE_NAME, format=string.FORMAT, level=LEVEL)
 logger = logging.getLogger(__name__)
 
 

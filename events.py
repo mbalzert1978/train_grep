@@ -3,11 +3,15 @@ from __future__ import annotations
 
 import collections
 import dataclasses
+import pathlib
 import typing
 
 if typing.TYPE_CHECKING:
-    import pathlib
     from collections.abc import Iterable
+
+_TE = typing.TypeVar("_TE", bound="Event")
+subscribers: dict[type[Event], list[typing.Callable[[_TE], None]]] = collections.defaultdict(list)
+Pathlike = str | pathlib.Path
 
 
 @dataclasses.dataclass
@@ -76,21 +80,33 @@ class PathNotFoundError(Error):
 
 
 @dataclasses.dataclass
+class PathPermissionError(Error):
+
+    """Permission denied event."""
+
+    path: Pathlike
+
+
+@dataclasses.dataclass
+class PathIsADirectoryError(Error):
+
+    """Path is a directory event."""
+
+    path: Pathlike
+
+
+@dataclasses.dataclass
 class NoLinesFoundError(Error):
 
     """No lines found event."""
 
 
-subscribers = collections.defaultdict(list)
-type Pathlike = str | pathlib.Path
-
-
-def register[T: Event](event_type: type[T], handler: typing.Callable[[T], None]) -> None:
+def register(event_type: type[_TE], handler: typing.Callable[[_TE], None]) -> None:
     """Register an event."""
     subscribers[event_type].append(handler)
 
 
-def emit[T: Event](event: T) -> None:
+def emit(event: _TE) -> None:
     """Emit an event to all subscribers."""
     if type(event) in subscribers:
         for handler in subscribers[type(event)]:

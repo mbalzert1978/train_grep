@@ -2,13 +2,14 @@
 import sys
 
 import events
+from resources import string
 
 
 def show(event: events.LinesCollected) -> None:
     """Show the found lines."""
     found = tuple(event.found)
     if not found:
-        events.emit(events.NoLinesFoundError(message="No lines found."))
+        events.emit(events.NoLinesFoundError(message=string.NO_LINES_MSG))
         return
     for line in found:
         sys.stdout.write(line)
