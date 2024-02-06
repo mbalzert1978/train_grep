@@ -16,13 +16,13 @@ To use the script, follow these steps:
 3. Open a terminal or command prompt and navigate to the directory where `train_grep_python.py` is saved.
 4. Run the script using the following command:
    ```
-   python pattern_search.py <file_path> <pattern>
+   python train_grep_python.py <file_path> <pattern>
    ```
    Replace `<file_path>` with the path to the text file you want to search, and `<pattern>` with the pattern you want to search for.
 
    Example:
    ```
-   python pattern_search.py example.txt "search_pattern"
+   python train_grep_python.py example.txt "search_pattern"
    ```
 
 5. The script will display the lines where the pattern is found in the specified file.
@@ -37,7 +37,7 @@ This line does not contain the pattern.
 ```
 Running the script with the command:
 ```
-python pattern_search.py example.txt "search_pattern"
+python train_grep_python.py example.txt "search_pattern"
 ```
 will output:
 ```
