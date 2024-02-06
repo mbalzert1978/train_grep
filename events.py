@@ -36,7 +36,7 @@ class ArgumentsParsed(Event):
 
 
 @dataclasses.dataclass
-class LinesCollected(Event):
+class LinesFound(Event):
 
     """Lines found event."""
 

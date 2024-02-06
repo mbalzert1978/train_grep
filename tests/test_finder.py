@@ -7,8 +7,8 @@ from tests import resources
 
 def test_finder_finds_all_lines(register) -> None:
     # Arrange
-    stub: CallableStub[events.LinesCollected]
-    stub = register(CallableStub(), events.LinesCollected)
+    stub: CallableStub[events.LinesFound]
+    stub = register(CallableStub(), events.LinesFound)
 
     # Act
     handler.finder.search_pattern(commands.FindLines(resources.LINES, "sun"))

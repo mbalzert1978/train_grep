@@ -5,7 +5,7 @@ import events
 from resources import string
 
 
-def print_lines(event: events.LinesCollected) -> None:
+def print_lines(event: events.LinesFound) -> None:
     """Show the found lines."""
     match list(event.found):
         case []:
@@ -20,4 +20,4 @@ def print_lines(event: events.LinesCollected) -> None:
 
 def setup() -> None:
     """Register the view event."""
-    events.register(events.LinesCollected, print_lines)
+    events.register(events.LinesFound, print_lines)

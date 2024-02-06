@@ -18,7 +18,7 @@ def test_bootstrap() -> None:
     assert events.ArgumentsParsed in events.subscribers
     assert events.StartUp in events.subscribers
     assert events.ArgumentsParsed in events.subscribers
-    assert events.LinesCollected in events.subscribers
+    assert events.LinesFound in events.subscribers
     assert events.LinesShown in events.subscribers
     assert events.Error in events.subscribers
     assert events.NoPathGivenError in events.subscribers
@@ -28,7 +28,7 @@ def test_bootstrap() -> None:
     assert events.PathIsADirectoryError in events.subscribers
     assert events.NoLinesFoundError in events.subscribers
     assert events.ArgumentsParsed in events.subscribers
-    assert events.LinesCollected in events.subscribers
+    assert events.LinesFound in events.subscribers
     assert events.NoPathGivenError in events.subscribers
     assert events.NoPatternGivenError in events.subscribers
     assert events.PathNotFoundError in events.subscribers
