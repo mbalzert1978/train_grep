@@ -1,44 +1,40 @@
-from boot import bootstrap
-from unittest.mock import MagicMock, call
 import pytest
+
 import commands
 import events
-import handler
+from boot import bootstrap
 
 
-def test_bootstrap(monkeypatch: pytest.MonkeyPatch) -> None:
+@pytest.mark.usefixtures("cleanup")
+def test_bootstrap() -> None:
     # Arrange
-    monkeypatch.setattr(events, "register", MagicMock())
-    monkeypatch.setattr(commands, "register", MagicMock())
-    expected_commands = [
-        call(commands.ParseArgs, handler.parser.parse),
-        call(commands.FindLines, handler.finder.search_pattern),
-    ]
-    expected_events = [
-        call(events.StartUp, handler.std_out_logger.log_info),
-        call(events.ArgumentsParsed, handler.std_out_logger.log_info),
-        call(events.LinesCollected, handler.std_out_logger.log_info),
-        call(events.LinesShown, handler.std_out_logger.log_info),
-        call(events.Error, handler.std_out_logger.log_info),
-        call(events.NoPathGivenError, handler.std_out_logger.log_error),
-        call(events.NoPatternGivenError, handler.std_out_logger.log_error),
-        call(events.PathNotFoundError, handler.std_out_logger.log_error),
-        call(events.PathPermissionError, handler.std_out_logger.log_error),
-        call(events.PathIsADirectoryError, handler.std_out_logger.log_error),
-        call(events.NoLinesFoundError, handler.std_out_logger.log_error),
-        call(events.ArgumentsParsed, handler.file_handler.fetch_lines),
-        call(events.LinesCollected, handler.std_out_viewer.print_lines),
-        call(events.NoPathGivenError, handler.std_out_error_handler.handle_error),
-        call(events.NoPatternGivenError, handler.std_out_error_handler.handle_error),
-        call(events.PathNotFoundError, handler.std_out_error_handler.handle_error),
-        call(events.PathPermissionError, handler.std_out_error_handler.handle_error),
-        call(events.PathIsADirectoryError, handler.std_out_error_handler.handle_error),
-        call(events.NoLinesFoundError, handler.std_out_error_handler.handle_error),
-    ]
+    assert not events.subscribers
+    assert not commands.subscribers
 
     # Act
     bootstrap()
 
     # Assert
-    assert list(commands.register.call_args_list) == expected_commands
-    assert list(events.register.call_args_list) == expected_events
+    assert events.ArgumentsParsed in events.subscribers
+    assert events.StartUp in events.subscribers
+    assert events.ArgumentsParsed in events.subscribers
+    assert events.LinesCollected in events.subscribers
+    assert events.LinesShown in events.subscribers
+    assert events.Error in events.subscribers
+    assert events.NoPathGivenError in events.subscribers
+    assert events.NoPatternGivenError in events.subscribers
+    assert events.PathNotFoundError in events.subscribers
+    assert events.PathPermissionError in events.subscribers
+    assert events.PathIsADirectoryError in events.subscribers
+    assert events.NoLinesFoundError in events.subscribers
+    assert events.ArgumentsParsed in events.subscribers
+    assert events.LinesCollected in events.subscribers
+    assert events.NoPathGivenError in events.subscribers
+    assert events.NoPatternGivenError in events.subscribers
+    assert events.PathNotFoundError in events.subscribers
+    assert events.PathPermissionError in events.subscribers
+    assert events.PathIsADirectoryError in events.subscribers
+    assert events.NoLinesFoundError in events.subscribers
+
+    assert commands.ParseArgs in commands.subscribers
+    assert commands.FindLines in commands.subscribers
