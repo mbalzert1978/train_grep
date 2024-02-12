@@ -1,8 +1,6 @@
-import sys
-
 import pytest
 
-from model.vector import ImutableVector, OutofBoundsError
+from model.vector import ImutableVector
 
 
 def test_vector_init():
@@ -11,6 +9,9 @@ def test_vector_init():
 
     assert vec_int == [1, 2, 3]
     assert vec_str == ["1", "2", "3"]
+
+    with pytest.raises(TypeError):
+        vec_int[0] = 0
 
     with pytest.raises(AttributeError):
         vec_int.c = 0

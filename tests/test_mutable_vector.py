@@ -15,8 +15,8 @@ def test_vector_init():
     vec_int.insert(0, 0)
     assert vec_int == MutableVector(range(4))
 
-    vec_str[5] = "4"
-    assert vec_str == MutableVector(str(x) for x in range(1, 5))
+    vec_str[2] = "4"
+    assert vec_str == MutableVector(["1", "2", "4"])
 
     assert len(vec_int) == 4
 
@@ -25,6 +25,12 @@ def test_vector_init():
     assert vec_str[0] == "1"
 
     assert vec_int == [0, 1, 2, 3]
+
+    assert vec_int[1:-1] == [1, 2]
+
+    del vec_int[1:-1]
+
+    assert vec_int == [0, 3]
 
 
 def test_vector_with_capacity():
@@ -35,6 +41,11 @@ def test_vector_with_capacity():
 def test_vector_with_capacity_out_bounds():
     with pytest.raises(OutofBoundsError):
         MutableVector.with_capacity(sys.maxsize + 1)
+
+
+def test_vector_with_negative_capacity_returns_empty_vector():
+    vec = MutableVector.with_capacity(-5)
+    assert not vec
 
 
 def test_skip():
