@@ -123,6 +123,8 @@ class MutableVector[T](Vector, MutableSequence):
 
     """A mutable Vector."""
 
+    __slots__ = ("_components", "_index")
+
     @classmethod
     def with_capacity(cls, capacity: int = MIN_CAPACITY) -> Self:
         """Create a mutable vector with the given capacity."""
