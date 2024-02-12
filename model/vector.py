@@ -47,7 +47,7 @@ class Vector[T](Sequence):
             case int():
                 return operator.getitem(self._components, __index)
             case _:
-                raise TypeError(ERROR_MSG_TYPE % (type(self).__getitem__,))
+                raise TypeError(ERROR_MSG_TYPE % (type(self).__getitem__.__name__,))
 
     def __iter__(self) -> Iterator[T]:
         """Return an iterator over the elements of this vector."""
