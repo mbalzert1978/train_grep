@@ -18,7 +18,7 @@ class OutofBoundsError(Exception):
     """Exception raised when an index is out of bounds."""
 
 
-class ImutableVector[T](Sequence):
+class Vector[T](Sequence):
 
     """An immutable Vector."""
 
@@ -116,7 +116,10 @@ class ImutableVector[T](Sequence):
         return value
 
 
-class MutableVector[T](ImutableVector, MutableSequence):
+Sequence.register(Vector)
+
+
+class MutableVector[T](Vector, MutableSequence):
 
     """A mutable Vector."""
 
@@ -173,3 +176,6 @@ class MutableVector[T](ImutableVector, MutableSequence):
     def insert(self, __index: SupportsIndex, __object: T) -> None:
         """Insert a value at the given index."""
         self._components.insert(__index, __object)
+
+
+MutableSequence.register(MutableVector)
