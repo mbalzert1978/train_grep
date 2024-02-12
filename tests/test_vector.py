@@ -16,6 +16,9 @@ def test_vector_init():
     with pytest.raises(AttributeError):
         vec_int.c = 0
 
+    with pytest.raises(TypeError):
+        vec_int["a"]
+
 
 def test_skip():
     vec = Vector(range(2))
