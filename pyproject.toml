@@ -10,7 +10,6 @@ python = "^3.12"
 result = "^0.13.1"
 
 
-
 [tool.poetry.group.dev.dependencies]
 black = "^23.10.0"
 ruff = "^0.1.1"
@@ -72,5 +71,19 @@ select = [
     "UP",
     "YTT",
 ]
-ignore = ["ANN001", "ANN101", "ANN102", "D211", "D212", "PGH003", "BLE001", "A003", "E501", "D103", "D107"]
+ignore = [
+    "A003",
+    "ANN001",
+    "ANN101",
+    "ANN102",
+    "BLE001",
+    "COM812",
+    "D103",
+    "D107",
+    "D211",
+    "D212",
+    "E501",
+    "ISC001",
+    "PGH003",
+]
 exclude = ["tests"]
