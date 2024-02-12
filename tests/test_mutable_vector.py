@@ -16,6 +16,7 @@ def test_vector_init():
     assert vec_int == MutableVector(range(4))
 
     vec_str[2] = "4"
+
     assert vec_str == MutableVector(["1", "2", "4"])
 
     assert len(vec_int) == 4
@@ -31,6 +32,9 @@ def test_vector_init():
     del vec_int[1:-1]
 
     assert vec_int == [0, 3]
+
+    with pytest.raises(AttributeError):
+        vec_str.v = "4"
 
 
 def test_vector_with_capacity():
