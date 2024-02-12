@@ -7,6 +7,11 @@ import sys
 from collections.abc import Iterator, MutableSequence, Sequence
 from typing import Iterable, Self, SupportsIndex, overload
 
+ERROR_MSG_TYPE = "unsupported operand type(s) for *: %s"
+ERROR_MSG_OOB = "Capacity %s is too large."
+MIN_CAPACITY = 0
+DEFAULT_VALUE = None
+
 
 class OutofBoundsError(Exception):
 
@@ -18,6 +23,7 @@ class ImutableVector[T](Sequence):
     """An immutable Vector."""
 
     __slots__ = ("_components", "_index")
+    __match_args__ = ("_components",)
 
     def __init__(self, __iterable: Iterable[T]) -> None:
         self._components = list(__iterable)
@@ -34,13 +40,16 @@ class ImutableVector[T](Sequence):
 
     def __getitem__(self, __index):
         """Return the item at the given index."""
-        if isinstance(__index, slice):
-            cls = type(self)
-            return cls(self._components[__index])
-        index = operator.index(__index)
-        return self._components[index]
+        cls = type(self)
+        match __index:
+            case slice():
+                return cls(operator.getitem(self._components, __index))
+            case int():
+                return operator.getitem(self._components, __index)
+            case _:
+                raise TypeError(ERROR_MSG_TYPE % (type(self).__getitem__,))
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator[T]:
         """Return an iterator over the elements of this vector."""
         return iter(self._components)
 
@@ -53,8 +62,7 @@ class ImutableVector[T](Sequence):
 
     def __repr__(self) -> str:
         """Return a string representation."""
-        components = reprlib.repr(self._components).replace("[", "]").replace("]", "")
-        return f"{type(self).__name__}({components})"
+        return f"{type(self).__name__}{tuple(self)}"
 
     def __str__(self) -> str:
         """Return a string representation."""
@@ -62,7 +70,7 @@ class ImutableVector[T](Sequence):
 
     def __hash__(self) -> int:
         """Return the hash value of this vector."""
-        return sum(hash(x) for x in self._components)
+        return sum(hash(component) for component in self._components)
 
     def __len__(self) -> int:
         """Return the number of items."""
@@ -70,24 +78,27 @@ class ImutableVector[T](Sequence):
 
     def skip(self, n: int) -> Self:
         """
-        Create an iterator that skips the first n elements.
+        Create an vector that skips the first n elements.
 
-        skip(n) skips elements until n elements are skipped or the end of the iterator is reached (whichever happens first).
+        skip(n) skips elements until n elements are skipped or
+          the end of the iterator is reached (whichever happens first).
         After that, all the remaining elements are returned.
-        In particular, if the original iterator is too short, then the returned iterator is empty.
+        In particular, if the original iterator is too short,
+          then the returned iterator is empty.
 
         Examples
         --------
         Basic usage:
             foo = MutableVector([1, 2, 3])
             foo.skip(1)
+
         """
         cls = type(self)
         return cls(self._components[n:])
 
     def next(self) -> T | None:
         """
-        Advances the iterator and returns the next value.
+        Advances the vector and returns the next value.
 
         Returns None when iteration is finished.
 
@@ -96,11 +107,13 @@ class ImutableVector[T](Sequence):
         Basic usage:
             foo = MutableVector([1, 2, 3])
             foo.next()
+
         """
         if self._index >= len(self._components):
             return None
+        value = operator.getitem(self._components, self._index)
         self._index += 1
-        return self._components[self._index - 1]
+        return value
 
 
 class MutableVector[T](ImutableVector, MutableSequence):
@@ -108,12 +121,18 @@ class MutableVector[T](ImutableVector, MutableSequence):
     """A mutable Vector."""
 
     @classmethod
-    def with_capacity(cls, capacity: int = 0) -> Self:
+    def with_capacity(cls, capacity: int = MIN_CAPACITY) -> Self:
         """Create a mutable vector with the given capacity."""
         if capacity > sys.maxsize:
-            msg = f"Capacity {capacity} is too large."
-            raise OutofBoundsError(msg)
-        return cls([]) if capacity <= 0 else cls(None for _ in range(capacity))
+            raise OutofBoundsError(ERROR_MSG_OOB)
+        if capacity <= MIN_CAPACITY:
+            capacity = MIN_CAPACITY
+        return cls([DEFAULT_VALUE] * capacity)
+
+    def __repr__(self) -> str:
+        """Return a string representation."""
+        components = reprlib.repr(self._components).strip("[]")
+        return f"{type(self).__name__}({components})"
 
     @overload
     def __getitem__(self, __index: int, /) -> T:
@@ -125,11 +144,7 @@ class MutableVector[T](ImutableVector, MutableSequence):
 
     def __getitem__(self, __index):
         """Return the item at the given index."""
-        if isinstance(__index, slice):
-            cls = type(self)
-            return cls(self._components[__index])
-        index = operator.index(__index)
-        return self._components[index]
+        return super().__getitem__(__index)
 
     @overload
     def __setitem__(self, index: int, value: T, /) -> None:
@@ -141,7 +156,7 @@ class MutableVector[T](ImutableVector, MutableSequence):
 
     def __setitem__(self, index, value):
         """Set the item at the given index."""
-        self._components.insert(index, value)
+        operator.setitem(self._components, index, value)
 
     @overload
     def __delitem__(self, index: int, /) -> None:
@@ -153,7 +168,7 @@ class MutableVector[T](ImutableVector, MutableSequence):
 
     def __delitem__(self, index):
         """Delete the item at the given index."""
-        self._components.pop(index)
+        operator.delitem(self._components, index)
 
     def insert(self, __index: SupportsIndex, __object: T) -> None:
         """Insert a value at the given index."""
