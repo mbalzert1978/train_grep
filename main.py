@@ -14,11 +14,12 @@ type Pathlike = str | Path
 
 def show_lines(lines: Iterable[str]) -> None:
     """Print the found lines."""
-    if not lines:
+    if lines:
+        for line in lines:
+            print(line)
+    else:
         msg = "No matches found."
         print(msg)
-    for line in lines:
-        print(line)
 
 
 @as_result(Exception)
@@ -38,7 +39,7 @@ def read_file(path: Pathlike) -> IO[str]:
 @as_result(Exception)
 def collect_lines(file: IO[str]) -> MutableVector[str]:
     """Read the lines from a given file."""
-    vec = MutableVector(file.readlines())
+    vec = MutableVector(file)
     file.close()
     return vec
 
