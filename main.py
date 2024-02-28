@@ -2,8 +2,8 @@
 import sys
 import typing
 
-import boot
-import commands
+from src import boot
+from src import commands
 
 
 def main(args: typing.Sequence[str]) -> None:
